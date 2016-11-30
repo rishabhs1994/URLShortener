@@ -156,12 +156,6 @@ def visit(short_url):
         final_req = "http://" + query.original_url
     return redirect(final_req)
 
-@app.route("/temp/<int:page_number>/<content>/<int:page_size>")
-def temp(page_number, content, page_size):
-    clipboard.copy("52.15.140.132:5000/visit/" + content)
-    to_be = '/login/' + str(page_number) +'/' + str(page_size)
-    return redirect(to_be)
-
 @app.route("/temp2/<int:page_number>" ,methods=['GET','Post'])
 def temp2(page_number):
     page_size = str(request.form['q'])
