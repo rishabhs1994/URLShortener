@@ -69,10 +69,13 @@ def home(error1="",error2=""):
             elif(not validate_email(C_E)):
                 return render_template('login.html', error1="", error2="INVALID EMAIL", uname2=C_U)
             else:
-                user = User(username = C_U, email= C_E)
+                user = User(username = C_U, user_email= C_E)
                 user.hash_password(C_P)
                 s.add(user)
                 s.commit()
+                session['user_id'] = user.id
+                session['logged_in'] = True
+                session['user-name'] = C_U
                 return redirect('/login/1/3')
      
 @app.route("/login/<int:page>/<int:page_size>",methods=['GET', 'POST'])
@@ -168,7 +171,7 @@ def temp3(page_number, content, page_size):
     to_be_sent = "52.15.140.132:5000/visit/" + content
     query = s.query(User).filter(User.id.in_([session.get('user_id')]))
     result = query.first()
-    emm = result.email
+    emm = result.user_email
     func(emm, to_be_sent)
     to_be = '/login/' + str(page_number) +'/' + str(page_size)
     return redirect(to_be)

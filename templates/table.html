@@ -43,7 +43,7 @@
             <input type="submit" value="copy" name="submit5">
         </form>
 
-        {% if CURRENT_USER != "" %}
+        {% if CURRENT_USER != "" and CURRENT_USER!="None" %}
         <form action="/temp3/{{page}}/{{result.shortened_url}}/{{page_size}}">
             <input type="submit" value="share on gmail" name="submit7">
         </form>

@@ -10,7 +10,7 @@ def func(to, shortenedurl):
 	msg['To'] = toaddr
 	msg['Subject'] = "TEST"
 	 
-	body = "Shortened URL" + shortenedurl 
+	body = "Shortened URL " + shortenedurl 
 	msg.attach(MIMEText(body, 'plain'))
 	 
 	server = smtplib.SMTP('smtp.gmail.com', 587)
