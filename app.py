@@ -7,7 +7,6 @@ import cgi
 import re
 from Base_Conversion import *
 from helper_email import *
-import pyperclip
 import urllib
 import validators
 from raven.contrib.flask import Sentry
