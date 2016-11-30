@@ -22,10 +22,6 @@ FLAG = 1
 @app.route('/home', methods=['GET', 'POST'])
 def home(error1="",error2=""):
     if( request.method == 'GET'):
-        try:
-            1 / 0
-        except ZeroDivisionError:
-            sentry.captureMessage('hiiii, world!')
         if not session.get('logged_in'):
             return render_template('login.html', error1=error1, error2=error2)
         else:
@@ -44,7 +40,9 @@ def home(error1="",error2=""):
             if result and result.verify_password(POST_PASSWORD):
                 CURRENT_USER = POST_USERNAME
                 CURRENT_USER_ID = result.id
+                session['user_id'] = result.id
                 session['logged_in'] = True
+
                 return redirect('/login/1/3')
             else:
                 return render_template('login.html', error1="INVALID USERNAME AND / OR PASSWORD", error2="", uname=POST_USERNAME)
@@ -89,9 +87,9 @@ def login(page,page_size):
     if(request.method == 'GET'):
         session['logged_in'] = True
         global CURRENT_USER_ID
-        query = m.query(Weburl).order_by(desc(Weburl.created_date)).filter_by(user_id = CURRENT_USER_ID)
+        query = m.query(Weburl).order_by(desc(Weburl.created_date)).filter_by(user_id = session.get('user_id'))
         results = query.offset((page-1)*page_size).limit(page_size)
-        query = m.query(Weburl).filter_by(user_id = CURRENT_USER_ID)
+        query = m.query(Weburl).filter_by(user_id = session.get('user_id'))
         result1 = query.offset((page)*page_size).limit(page_size).count()
         global FLAG
         if(FLAG==0):
@@ -173,7 +171,7 @@ def visit(short_url):
 
 @app.route("/temp/<int:page_number>/<content>/<int:page_size>")
 def temp(page_number, content, page_size):
-    pyperclip.copy("localhost:4000/visit/" + content)
+    pyperclip.copy("52.15.140.132:4000/visit/" + content)
     to_be = '/login/' + str(page_number) +'/' + str(page_size)
     return redirect(to_be)
 
