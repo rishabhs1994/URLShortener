@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/static/style2.css" type="text/css">
+</head>
+<body>
+<a href='/logout'>Logout</a>
+<h1>Welcome {{CURRENT_USER}}</h1>
+<form action="/login/1/{{page_size}}" method = "POST">
+    <h1>Please enter the original URL to be shortened</h1>
+    <input type="text" value="" placeholder="Original URL" name="url_entered" style="width:60%;height:30px">
+    <div style="color:red">
+    <br>
+    <input type="submit" value="Shorten URL" name="submit3">
+    {{error3}}
+    </div>
+</form>
+<div style="padding-top: 15px;">
+
+<table class="table-fill" style="width: 100px">
+<thead>
+<tr>
+    <th class="text-left"> Original URL </th>
+    <th class="text-left"> Shortened URL </th>
+    <th class="text-left"> Created Date </th>
+    <th class="text-left"> No. of Clicks </th>
+    <th class="text-left"> Features</th>
+</tr>
+</thead>
+{% for result in results %}
+<tbody class="table-hover">
+<tr>
+    <td class="text-left">{{ result.original_url }}</td>
+    <td class="text-left"><a href='/visit/{{result.shortened_url}}'>{{ result.shortened_url }}</a></td>
+    <td class="text-left">{{ result.created_date }}</td>
+    <td class="text-left">{{ result.no_of_click }}</td>
+    <td class="text-left">
+        <form action="/delete/{{result.id}}/{{page_size}}" method = "POST">
+            <input type="submit" value="delete" name="submit4">
+        </form>
+
+        <form action="/temp/{{page}}/{{result.shortened_url}}/{{page_size}}">
+            <input type="submit" value="copy" name="submit5">
+        </form>
+
+        <form action="/analyse/{{result.id}}/{{page}}/{{page_size}}">
+            <input type="submit" value="Analyse" name="submit6">
+        </form>
+    </td>
+</tr>
+</tbody> 
+{% endfor %}
+</table>
+
+
+</div>
+
+<form action="/temp2/{{page}}" method = "POST">
+    <select name="q">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+    </select>
+    <br>
+    <input type="submit" value="Choose Page Size" name="submit7">
+</form>
+
+{% if result1 != 0 %}
+    <a href='/login/{{page+1}}/{{page_size}}'>Next</a>
+{% endif %}
+
+{% if page !=1 %}
+    <a href='/login/{{page-1}}/{{page_size}}'>Previous</a>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="/static/style.css" type="text/css">
+{% block body %}
+{% if session['logged_in'] %}
+<p>You're logged in already!</p>
+{% else %}
+ 
+<div style="width:100%">
+<div style="width:50%;float:left"> 
+<form action="/home" method="POST">
+	<div >
+		<div>
+			<div class="app-title">
+				<h1>Login</h1>
+			</div>
+ 
+			<div class="login-form">
+				<div class="control-group">
+				<input type="text" class="login-field" value="{{uname}}" placeholder="username" name="username">
+				</div>
+ 
+				<div class="control-group">
+				<input type="password" class="login-field" value="" placeholder="password" name="password">
+				</div>
+
+ 				{{error1}}
+				<br>
+				<br>
+                <input type="submit" value="Log in" name="submit1">
+			    <br>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+<div style="width:50%;float:left">
+<form action="/home" method="POST">
+	<div>
+		<div>
+			<div class="app-title">
+				<h1>Register</h1>
+			</div>
+ 
+			<div class="login-form">
+				<div class="control-group">
+				<input type="text" class="login-field" value="{{uname2}}" placeholder="username" name="username1" required>
+				</div>
+ 
+				<div class="control-group">
+				<input type="password" value="" placeholder="password" name="password1" required>
+				</div>
+ 
+ 				<div class="control-group">
+				<input type="password" value="" placeholder="confirm password" name="password2" required>
+				</div>
+				{{error2}}
+				<br>
+				<br>
+                <input type="submit" value="Register"  name="submit2">
+			    <br>
+			</div>
+		</div>
+	</div>
+</form>
+</div> 
+{% endif %}
+{% endblock %}
