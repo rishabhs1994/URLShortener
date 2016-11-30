@@ -17,7 +17,7 @@
 </form>
 <div style="padding-top: 15px;">
 
-<table class="table-fill" style="width: 100px">
+<table class="table-fill" style="width: 100">
 <thead>
 <tr>
     <th class="text-left"> Original URL </th>
@@ -42,6 +42,12 @@
         <form action="/temp/{{page}}/{{result.shortened_url}}/{{page_size}}">
             <input type="submit" value="copy" name="submit5">
         </form>
+
+        {% if CURRENT_USER != "" %}
+        <form action="/temp3/{{page}}/{{result.shortened_url}}/{{page_size}}">
+            <input type="submit" value="share on gmail" name="submit7">
+        </form>
+        {% endif %}
 
         <form action="/analyse/{{result.id}}/{{page}}/{{page_size}}">
             <input type="submit" value="Analyse" name="submit6">
