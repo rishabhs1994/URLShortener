@@ -12,8 +12,7 @@ import validators
 from raven.contrib.flask import Sentry
 import clipboard
 import signal 
-from validate_email_address import validate_email
-engine = create_engine('sqlite:///tutorial.db', echo=True)
+engine = create_engine('sqlite:///project.db', echo=True)
  
 app = Flask(__name__)
 
@@ -51,7 +50,6 @@ def home(error1="",error2=""):
             C_U = str(request.form['username1'])
             C_P = str(request.form['password1'])
             C_P2 = str(request.form['password2'])
-            C_E = str(request.form['emaill'])
             query = s.query(User).filter(User.username.in_([C_U]))
             result = query.first()
             if(result):
@@ -66,10 +64,8 @@ def home(error1="",error2=""):
                 return render_template('login.html', error1="", error2="PASSWORDS MUST HAVE 6-12 CHARACTER ONLY!", uname2=C_U)
             elif(re.match("^[a-zA-Z0-9]+$", C_P) is None):
                 return render_template('login.html', error1="", error2="PASSWORD CAN ONLY CONTAIN a-z, A-Z, 0-9.", uname2=C_U)
-            elif(not validate_email(C_E)):
-                return render_template('login.html', error1="", error2="INVALID EMAIL", uname2=C_U)
             else:
-                user = User(username = C_U, user_email= C_E)
+                user = User(username = C_U)
                 user.hash_password(C_P)
                 s.add(user)
                 s.commit()
@@ -163,16 +159,6 @@ def visit(short_url):
 @app.route("/temp/<int:page_number>/<content>/<int:page_size>")
 def temp(page_number, content, page_size):
     clipboard.copy("52.15.140.132:5000/visit/" + content)
-    to_be = '/login/' + str(page_number) +'/' + str(page_size)
-    return redirect(to_be)
-
-@app.route("/temp3/<int:page_number>/<content>/<int:page_size>")
-def temp3(page_number, content, page_size):
-    to_be_sent = "52.15.140.132:5000/visit/" + content
-    query = s.query(User).filter(User.id.in_([session.get('user_id')]))
-    result = query.first()
-    emm = result.user_email
-    func(emm, to_be_sent)
     to_be = '/login/' + str(page_number) +'/' + str(page_size)
     return redirect(to_be)
 

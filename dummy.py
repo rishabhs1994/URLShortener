@@ -1,13 +1,3 @@
-import pyperclip
-
-def g():
-	pyperclip.copy('The text to be copied to the clipboard.')
-if(__name__ == '__main__'):
-	g()
-
-
-
-"""
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

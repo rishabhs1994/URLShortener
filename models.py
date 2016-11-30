@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, backref
 from passlib.apps import custom_app_context as pwd_context
 import datetime
  
-engine = create_engine('sqlite:///tutorial.db', echo=True)
+engine = create_engine('sqlite:///project.db', echo=True)
 Base = declarative_base()
  
 ########################################################################
