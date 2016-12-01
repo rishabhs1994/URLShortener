@@ -6,7 +6,6 @@ from models import *
 import cgi
 import re
 from Base_Conversion import *
-from helper_email import *
 import urllib
 import validators
 from raven.contrib.flask import Sentry
@@ -28,7 +27,7 @@ def home(error1="",error2=""):
         if not session.get('logged_in'):
             return render_template('login.html', error1=error1, error2=error2)
         else:
-            return "Hello Boss!  <a href='/logout'>Logout</a>"
+            return "Welcome!  <a href='/logout'>Logout</a> <a href='/login/1/3'>URL Shortener</a>"
  
     if( request.method == 'POST'):
         if("submit1" in request.form): 
@@ -76,11 +75,11 @@ def home(error1="",error2=""):
      
 @app.route("/login/<int:page>/<int:page_size>",methods=['GET', 'POST'])
 def login(page,page_size):
-    if(request.method == 'GET'):
+    if(request.method == 'GET' and session.get('logged_in') == True):
         #session['logged_in'] = True
-        query = s.query(Weburl).order_by(desc(Weburl.created_date)).filter_by(user_id = session.get('user_id'))
+        query = s.query(Weburl).order_by(desc(Weburl.created_date)).filter_by(user_id = session.get('user_id'), deleted=False)
         results = query.offset((page-1)*page_size).limit(page_size)
-        query = s.query(Weburl).filter_by(user_id = session.get('user_id'))
+        query = s.query(Weburl).filter_by(user_id = session.get('user_id'), deleted=False)
         result1 = query.offset((page)*page_size).limit(page_size).count()
         global FLAG
         if(FLAG==0):
@@ -90,6 +89,8 @@ def login(page,page_size):
         else:
             return render_template("table.html",results=results, page=page, result1 = result1, CURRENT_USER = session.get('user-name'), page_size=page_size)
 
+    elif(request.method == 'GET'):
+        return redirect('/home')
 
     if(request.method == 'POST'):
         obj = s.query(Weburl).order_by(Weburl.id.desc()).first()
@@ -122,7 +123,7 @@ def login(page,page_size):
 def delete(del_id, page_size):
     if(request.method == 'POST'):
         query = s.query(Weburl).filter_by(id=del_id).first()
-        s.delete(query)
+        query.deleted = True
         s.commit()
         sss = '/login/1/' + str(page_size)
         return redirect(sss)
@@ -149,11 +150,29 @@ def visit(short_url):
     if(platform == "iphone" or platform=="ios"):
         query.visits_in_ios +=1
 
+    final_req = query.original_url
+    if(final_req.startswith("http://52.15.140.132:5000/visit/")):
+        temp = final_req[32:]
+        id_to = toBase10(temp)
+        query2 = s.query(Weburl).filter_by(id=id_to).first()
+        query2.no_of_click-=1
+        if(browser == "chrome"):
+            query2.visits_in_chrome-=1
+        elif(browser == "safari"):
+            query2.visits_in_safari -=1
+        elif(browser == "firefox"):
+            query2.visits_in_firefox -=1
+        elif(browser == "internet_explorer"):
+            query2.visits_in_internet_explorer -=1
+
+        if(platform == "android"):
+            query2.visits_in_android -=1
+
+        if(platform == "iphone" or platform=="ios"):
+            query2.visits_in_ios -=1
+
     s.commit()
-    if(query.original_url.startswith("http")):
-        final_req = query.original_url
-    else:
-        final_req = "http://" + query.original_url
+
     return redirect(final_req)
 
 @app.route("/temp2/<int:page_number>" ,methods=['GET','Post'])
@@ -178,4 +197,4 @@ def logout():
  
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
-    app.run(debug=True,host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)

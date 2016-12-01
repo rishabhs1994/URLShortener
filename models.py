@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import Column, Date, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from passlib.apps import custom_app_context as pwd_context
@@ -17,7 +17,6 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(32))
     password_hash = Column(String(64))
-    user_email = Column(String(64))
     #----------------------------------------------------------------------
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -43,6 +42,7 @@ class Weburl(Base):
     visits_in_android = Column(Integer, default=0)
     visits_in_ios = Column(Integer, default=0)
     user_id = Column(Integer, ForeignKey('users.id'))
+    deleted = Column(Boolean, default=False)
     users = relationship(User)
 
 
